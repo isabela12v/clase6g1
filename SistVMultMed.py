@@ -97,8 +97,9 @@ def main():
                        \n2- Ver fecha de ingreso 
                        \n3- Ver número de mascotas en el servicio 
                        \n4- Ver medicamentos que se están administrando
-                       \n5- Eliminar mascota 
-                       \n6- Salir 
+                       \n5- Eliminar medicamento
+                       \n6- Eliminar mascota 
+                       \n7- Salir 
                        \nUsted ingresó la opción: ''' ))
         if menu==1: # Ingresar una mascota 
             if servicio_hospitalario.verNumeroMascotas() >= 10:
@@ -108,7 +109,15 @@ def main():
             #   verificacion=servicio_hospitalario.verDatosPaciente(historia)
             if servicio_hospitalario.verificarExiste(historia) == False:
                 nombre=input("Ingrese el nombre de la mascota: ")
-                tipo=input("Ingrese el tipo de mascota (felino o canino): ")
+                tipo=input("Ingrese el tipo de mascota (felino=1 o canino=2): ")
+                g={"felino":"1"}
+                p={"canino":"2"}
+                if tipo=="1":
+                    g.update()
+                elif tipo=="2":
+                    p.update()
+                else:
+                    return
                 peso=int(input("Ingrese el peso de la mascota: "))
                 fecha=input("Ingrese la fecha de ingreso (dia/mes/año): ")
                 nm=int(input("Ingrese cantidad de medicamentos: "))
@@ -116,6 +125,10 @@ def main():
 
                 for i in range(0,nm):
                     nombre_medicamentos = input("Ingrese el nombre del medicamento: ")
+                    if medicamento in lista_med:
+                        print("El medicamento ya esta ingresado, intentelo de nuevo")
+                    else:
+                        continue
                     dosis =int(input("Ingrese la dosis: "))
                     medicamento = Medicamento()
                     medicamento.asignarNombre(nombre_medicamentos)
@@ -133,15 +146,17 @@ def main():
 
             else:
                 print("Ya existe la mascota con el numero de histoira clinica")
-
+            
         elif menu==2: # Ver fecha de ingreso
             q = int(input("Ingrese la historia clínica de la mascota: "))
+            from datetime import datetime
             fecha = servicio_hospitalario.verFechaIngreso(q)
-            # if servicio_hospitalario.verificarExiste == True
-            if fecha != None:
-                print("La fecha de ingreso de la mascota es: " + fecha)
-            else:
-                print("La historia clínica ingresada no corresponde con ninguna mascota en el sistema.")
+            fecha=int(input("Ingrese la fecha de manera dd/mm/aaaa: "))
+            try:
+                fecha = datetime.strptime(fecha,"%d/%m/%Y")
+                return fecha
+            except ValueError:
+                print("Formato de fecha incorrecto. Inténtalo de nuevo.")
             
         elif menu==3: # Ver número de mascotas en el servicio 
             numero=servicio_hospitalario.verNumeroMascotas()
@@ -157,8 +172,13 @@ def main():
             else:
                 print("La historia clínica ingresada no corresponde con ninguna mascota en el sistema.")
 
-        
-        elif menu == 5: # Eliminar mascota
+        elif menu==5:
+            q = int(input("Ingrese la historia clínica de la mascota: "))
+            medicamento = lista_med.verMedicamento(q) 
+            e=input("Ingrese el nombre del medicamento que desea eliminar: ")
+            medicamento = lista_med.verMedicamento(e)
+            del lista_med(e)
+        elif menu==6: # Eliminar mascota
             q = int(input("Ingrese la historia clínica de la mascota: "))
             resultado_operacion = servicio_hospitalario.eliminarMascota(q) 
             if resultado_operacion == True:
@@ -166,7 +186,7 @@ def main():
             else:
                 print("No se ha podido eliminar la mascota")
         
-        elif menu==6:
+        elif menu==7:
             print("Usted ha salido del sistema de servicio de hospitalización...")
             break
         
